@@ -1,0 +1,116 @@
+@import "tailwindcss";
+
+
+body{
+  background-color: #f5f0f0;
+}
+
+.text-primary{
+  color: #ff5252;
+}
+
+.bg-primary{
+  background-color: #ff5252 !important;
+}
+
+.btn-org{
+  background-color: #ff5252 !important;
+  color: #fff !important;
+}
+
+.container{
+  width: 90%;
+  margin: auto;
+}
+
+.nav li .submenu {
+  visibility: hidden;
+}
+
+.nav li:hover .submenu{
+  opacity: 1;
+  visibility: inherit;
+  top: 100%;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  scroll-behavior: smooth;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 20px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.ReactCollapse--collapse {
+  transition: height 500ms;
+}
+
+.range-slider {
+  height: 3px !important;
+}
+
+.range-slider .range-slider__thumb{
+  width: 14px !important;
+  height: 14px !important;
+  background: #ff5252 !important;
+}
+
+.range-slider .range-slider__range{
+  background: #ff5252 !important;
+}
+
+button .MuiCircularProgress-root{
+  width: 18px !important;
+  height: 18px !important;
+}
+
+.myAccountTabs li a{
+  position: relative;
+  display: block;
+  padding: 0px 0px;
+}
+
+.myAccountTabs li a::before{
+  content: '';
+  width: 3px;
+  height: 50%;
+  position: absolute;
+  top: 50%;
+  left:0px;
+  background: #ff5252;
+  transition: all 0.3s ease-in-out;
+  opacity: 0;
+}
+
+.myAccountTabs li a.active::before {
+  height: 100%;
+  opacity: 1;
+  top: 0;
+}
+
+.myAccountTabs li a.active button svg{
+    color: #ff5252 !important;
+    opacity: 1 !important;
+}
+
+.react-international-phone-input{
+  width: 100% !important;
+}
+
+.react-international-phone-country-selector-button{
+  width: 55px !important;
+}
+
+.react-international-phone-input-container{
+  border: 1px solid rgba(0,0,0,0.1) !important;
+}

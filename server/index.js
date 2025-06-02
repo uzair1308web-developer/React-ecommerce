@@ -14,6 +14,8 @@ import cartRouter from "./route/cart.route.js";
 import myListRouter from "./route/mylist.route.js";
 import addressRouter from "./route/address.route.js";
 import bannerRouter from "./route/banner.route.js";
+import orderRouter from "./route/order.route.js";
+import wishlistRouter from "./route/wishlist.route.js";
 
 const app = express();
 app.use(cors());
@@ -38,12 +40,14 @@ app.get("/", (request, response) => {
 });
 
 app.use("/api/user", userRouter);
-app.use("/api/banner", bannerRouter)
+app.use("/api/banner", bannerRouter);
 app.use("/api/category", categoryRouter);
-app.use("/api/product", productRouter)
-app.use("/api/cart", cartRouter)
-app.use("/api/myList", myListRouter)
-app.use("/api/address", addressRouter)
+app.use("/api/product", productRouter);
+app.use("/api/cart", cartRouter);
+app.use("/api/myList", myListRouter);
+app.use("/api/address", addressRouter);
+app.use("/api/order", orderRouter);
+app.use("/api/wishlist", wishlistRouter)
 
 app.listen(process.env.PORT, () => {
   console.log("Server is running", process.env.PORT);

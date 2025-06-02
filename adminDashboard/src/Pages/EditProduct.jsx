@@ -32,6 +32,7 @@ const EditProduct = () => {
         subCategory: "",
         countInStock: "",
         rating: "",
+        tag: "",
         isFeatured: false,
         discount: "",
         productRam: [],
@@ -44,6 +45,7 @@ const EditProduct = () => {
     const [productFeatured, setProductFeatured] = useState(false);
     const [productRam, setProductRam] = useState([]);
     const [productSize, setProductSize] = useState([]);
+    const [productTag, setProductTag] = useState('');
     const [productWeight, setProductWeight] = useState([]);
     const [previews, setPreviews] = useState([])
     const context = useContext(MyContext);
@@ -83,6 +85,11 @@ const EditProduct = () => {
         formData.subCat = name
     }
 
+    const handleChangeProductTag = (event) => {
+        setProductTag(event.target.value);
+        formData.tag = event.target.value
+    }
+
     const handleChangeProductRams = (event) => {
         const {
             target: { value },
@@ -105,7 +112,7 @@ const EditProduct = () => {
         } = event;
         console.log(value)
         setProductSize(typeof value === 'string' ? value.split(',') : value);
-        formData.sizes = value.map(val => ({size: val}))
+        formData.sizes = value.map(val => ({ size: val }))
     }
 
 
@@ -130,12 +137,14 @@ const EditProduct = () => {
             formData.countInStock = res?.product.countInStock
             formData.rating = res?.product.rating
             formData.isFeatured = res?.product.isFeatured
+            formData.tag = res?.product.tag
             formData.discount = res?.product.discount
             formData.productRam = res?.product.productRam
             formData.sizes = res?.product.sizes
             formData.productWeight = res?.product.productWeight
             setPreviews(res?.product.images)
             setProductSize(res?.product?.sizes?.map((item) => item?.size))
+            setProductTag(res?.product?.tag)
         })
     }, [])
 
@@ -181,12 +190,12 @@ const EditProduct = () => {
                     subCategory: "",
                     countInStock: "",
                     rating: "",
+                    tag: "",
                     isFeatured: false,
                     discount: "",
                     productRam: [],
                     sizes: [],
                     productWeight: [],
-
                 })
                 setProductSize([])
                 setPreviews([])
@@ -239,7 +248,7 @@ const EditProduct = () => {
                                     onChange={e => {
                                         setFormData({
                                             ...formData,
-                                            category: e.target.value,
+                                            category: e.target.value
                                         })
                                     }}
                                     sx={{
@@ -437,6 +446,38 @@ const EditProduct = () => {
                                 <MenuItem value={'L'}>L</MenuItem>
                             </Select>
                         </div>
+                    </div>
+                    <div className='py-2'>
+                        <label htmlFor="" className='text-zinc-500'>Product Tag</label>
+                        <Select
+                            label="Product Tag"
+                            fullWidth
+                            variant='standard'
+                            value={productTag}
+                            onChange={handleChangeProductTag}
+                            MenuProps={MenuProps}
+                            sx={{
+                                '& .MuiSelect-root': {
+                                    borderBottom: '1px solid rgba(0, 0, 0, 0.42)', // Bottom border like TextField
+                                    borderRadius: 0, // Removes corner rounding
+                                    '&:hover': {
+                                        borderBottom: '2px solid black' // Hover effect for better UX
+                                    },
+                                    '&:focus': {
+                                        borderBottom: '2px solid black' // Focus effect like TextField
+                                    },
+                                    paddingX: 0 // Align text to match the TextField spacing
+                                },
+                                '&::after': {
+                                    borderBottom: '2px solid black' // Focus underline effect
+                                }
+                            }}
+                        >
+                            <MenuItem value={'new'}>New</MenuItem>
+                            <MenuItem value={'popular'}>Popular</MenuItem>
+                            <MenuItem value={'hot'}>Hot</MenuItem>
+
+                        </Select>
                     </div>
                     <div className='py-2'>
                         <label htmlFor="" className='block mb-2 text-zinc-600'>Rating</label>

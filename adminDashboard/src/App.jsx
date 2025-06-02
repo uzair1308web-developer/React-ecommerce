@@ -20,6 +20,8 @@ import ProductDetail from './Pages/ProductDetail'
 import AddBanner from './Pages/AddBanner'
 import ViewBanner from './Pages/ViewBanner'
 import AddStock from './Pages/AddStock'
+import Orders from './Pages/Orders'
+import OrderDetail from './Pages/OrderDetail'
 export const MyContext = createContext()
 
 function App() {
@@ -107,6 +109,8 @@ function App() {
             <Route path='show-category' element={<ShowProdCategory />} />
             <Route path='sub-category' element={<ShowSubCategory />} />
             <Route path='show-product' element={<ShowProduct />} />
+            <Route path='orders' element={<Orders />} />
+            <Route path='order/:id' element={<OrderDetail />} />
           </Route>
         </Routes>
         <Toaster />

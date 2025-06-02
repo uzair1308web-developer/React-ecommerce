@@ -29,12 +29,12 @@ const Navigation = () => {
         <>
             <nav>
                 <div className='container flex items-center justify-end'>
-                    <div className='col_1 w-[20%]'>
-                        <Button className='!text-black' onClick={openCategoryPanel}>
-                            <RiMenu2Fill className='text-2xl' /> Shop By Categories
+                    <div className='col_1 lg:w-[20%] w-full'>
+                        <Button className='!text-black !text-sm !lg:text-base' onClick={openCategoryPanel}>
+                            <RiMenu2Fill className='lg:text-2xl' /> Shop By Categories
                         </Button>
                     </div>
-                    <div className='col_2 w-[65%]'>
+                    <div className='col_2 w-[80%] hidden lg:flex'>
                         <ul className='flex items-center gap-3 nav'>
                             <li className='inline-block'>
                                 <Link to="/" className='link transition text-[14px] font=[500]'>
@@ -85,9 +85,6 @@ const Navigation = () => {
                         </ul>
                     </div>
 
-                    <div className='col_3 w-[15%]'>
-                        <p className='text-sm text-black'>Free International Delivery</p>
-                    </div>
                 </div>
             </nav>
 

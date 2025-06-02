@@ -4,10 +4,12 @@ import { FaRegUserCircle } from 'react-icons/fa';
 import { RiMenu2Line } from 'react-icons/ri';
 import { MyContext } from '../App'
 import { fetchDataFromApi } from '../utils/api';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
+    const navigate = useNavigate()
     const context = useContext(MyContext);
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -17,13 +19,14 @@ const Navbar = () => {
     };
 
 
-    const logout = () => {
+    const logout = async () => {
         // setAnchorE1(null);
-        const apiData = fetchDataFromApi(`/api/user/logout?token=${localStorage.getItem('accesstoken')}`, { withCredentials: true })
+        const apiData = await fetchDataFromApi(`/api/user/logout?token=${localStorage.getItem('accesstoken')}`, { withCredentials: true })
         if (apiData) {
             // console.log(apiData)
             context.setIsLogin(false)
             localStorage.clear()
+            navigate('/')
         }
 
     }
@@ -31,9 +34,11 @@ const Navbar = () => {
     return (
         <header className='w-full h-full py-4 shadow-lg pl-64 z-50 bg-zinc-800 flex items-center justify-between sticky top-0'>
             <div className='part1'>
-                <div className='px-4 cursor-pointer' onClick={() => context.setIsSidebarOpen(!context.isSidebarOpen)}>
+                {/* <div className='px-4 cursor-pointer sm:hidden' onClick={() => {
+                    context.setIsSidebarOpen(!context.isSidebarOpen)
+                }}>
                     <RiMenu2Line className='text-[18px] text-white' />
-                </div>
+                </div> */}
             </div>
             <div className='part1'>
                 <div className='pe-4'>

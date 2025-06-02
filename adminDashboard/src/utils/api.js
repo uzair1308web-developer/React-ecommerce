@@ -31,6 +31,7 @@ export const fetchDataFromApi = async (url) => {
     };
 
     const { data } = await axios.get(apiUrl + url, params);
+    console.log(data);
     return data;
   } catch (error) {
     console.log(error);
@@ -66,11 +67,12 @@ export const uploadImages = async (url, formData) => {
         "Content-Type": "multipart/form-data",
       },
     };
-
     var response;
+    
     await axios.post(apiUrl + url, formData, params).then((res) => {
       response = res;
     });
+
     return response;
   } catch (error) {
     console.log(error);

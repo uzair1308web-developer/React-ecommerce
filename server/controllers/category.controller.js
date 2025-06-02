@@ -77,7 +77,13 @@ export async function createCategory(request, response) {
 
 export async function getCategories(request, response) {
   try {
-    const categories = await CategoryModel.find();
+    const {priceRange} = request.query
+    const matchQuery = {  };
+    if(priceRange){
+      matchQuery.price = { $lt: +priceRange[0] };
+      matchQuery.price = { $gt: +priceRange[1] }; 
+    } 
+    const categories = await CategoryModel.find(matchQuery);
     const categoryMap = {};
     categories.forEach((cat) => {
       categoryMap[cat._id] = { ...cat._doc, children: [] };

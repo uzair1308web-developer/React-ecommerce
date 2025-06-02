@@ -8,9 +8,6 @@ import { Link } from 'react-router-dom';
 import { BsFillInboxesFill, BsThreeDotsVertical } from 'react-icons/bs';
 
 
-
-
-
 const ShowProduct = () => {
     const [refresh, setRefresh] = useState(false);
     const [selectedRows, setSelectedRows] = useState([]);
@@ -31,11 +28,11 @@ const ShowProduct = () => {
                 </div>
             )
         },
-        { field: 'category.name', headerName: 'Category Name', width: 170, renderCell: (params) => (params?.row?.category?.name) },
-        { field: 'brand', headerName: 'Brand Name', width: 100 },
+        { field: 'category.name', headerName: 'Category Name', width: 180, renderCell: (params) => (params?.row?.category?.name) },
+        { field: 'brand', headerName: 'Brand Name', width: 160 },
         { field: 'name', headerName: 'Product Name', width: 220 },
         { field: 'description', headerName: 'Product Description', width: 500 },
-        { field: 'price', headerName: 'Price', width: 70 },
+        { field: 'price', headerName: 'Price', width: 110 },
         {
             field: 'action', headerName: 'Action', width: 120,
             renderCell: (params) => {
@@ -97,7 +94,6 @@ const ShowProduct = () => {
                                     </span>
                                 </Link>
                             </MenuItem>
-
                         </Menu>
 
                     </div >
@@ -142,9 +138,9 @@ const ShowProduct = () => {
     return (
         <div>
             <div className='w-full border-zinc-200 rounded-xl shadow-md p-4'>
-                <div className='flex py-4 justify-between'>
+                <div className='flex py-4 justify-between flex-col lg:flex-row gap-2'>
                     <div className=' border-b border-zinc-200'>
-                        <h2 className='text-xl font-semibold'>All Products</h2>
+                        <h2 className='text-xl  font-semibold'>All Products</h2>
                     </div>
                     <div className='flex items-center gap-4'>
                         {

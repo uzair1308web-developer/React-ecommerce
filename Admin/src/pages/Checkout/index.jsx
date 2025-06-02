@@ -1,144 +1,170 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { useContext } from 'react'
+import { MyContext } from '../../App'
+import { useNavigate } from 'react-router-dom'
+import { fetchDataFromApi, postData } from '../../utils/api'
+import { Radio } from '@mui/material'
+
+const label = { inputProps: { 'aria-label': 'Radio demo' } };
 
 const Checkout = () => {
+
+    const context = useContext(MyContext)
+    const [products, setProducts] = useState([])
+    const [subTotal, setSubTotal] = useState(0)
+    const [address, setAddress] = useState([])
+    const [selectedValue, setSelectedValue] = useState()
+    const navigate = useNavigate()
+    const prodIds = context.cart.map(item => item.product)
+
+    if (context.cart.length == 0  || !context?.userData) {
+        context.openAlertBox('error', 'Cart is empty')
+        context.setCart([])
+        navigate('/')
+    }
+
+    useEffect(() => {
+        postData(`/api/product/getMultipleProducts/`, { productIds: prodIds }).then((res) => {
+            if (res?.error === false) {
+                setProducts(res?.products)
+                let total = 0;
+                context.cart.map(item => {
+                    const product = res?.products.find(prod => prod._id === item.product);
+                    total += product?.price * item.quantity
+                });
+                setSubTotal(total);
+            }
+        })
+    }, [context.cart])
+
+    useEffect(() => {
+        if (context?.userData?._id !== '' && context?.userData?._id !== undefined) {
+            fetchDataFromApi(`/api/address/get?userId=${context?.userData?._id}`).then((res) => {
+                setAddress(res?.address);
+            })
+        }
+    }, [context?.userData])
+
+    const handleSubmitOrder = (e) => {
+        e.preventDefault();
+        if (selectedValue === undefined) {
+            context.openAlertBox('error', 'Please select an address');
+            return;
+        }
+        const formData = {
+            userId: context?.userData?._id,
+            delivery_address: selectedValue,
+            products: context.cart,
+            subTotal,
+            total: subTotal + 199,
+        }
+        postData('/api/order/create', formData).then((res) => {
+            if (res?.error === false) {
+                context.openAlertBox('success', res?.message);
+                context.setCart([]);
+                localStorage.setItem("cart", JSON.stringify([]));
+            } else {
+                context.openAlertBox('error', res?.message);
+            }
+        })
+    }
+
+    const handleChange = (event) => {
+        setSelectedValue(event.target.value)
+    }
+
+
+
     return (
         <section className='checkout'>
-            <div className='container mx-auto p-4 w-full relative flex '>
-                <div className='leftcol w-[70%]'>
-                    <div className='bg-white shadow-md  w-[80%]  py-8 px-4 rounded-lg'>
-                        <h2 className='text-xl font-semibold'>Customer Details</h2>
+            <form onSubmit={handleSubmitOrder} className='container mx-auto lg:p-4 py-2 w-full relative flex flex-col lg:flex-row gap-4 lg:gap-0'>
+                <div className='leftcol lg:w-[70%]'>
+                    <div className='bg-white shadow-md  lg:w-[80%] py-8 px-4 rounded-lg'>
+                        <h2 className='text-xl font-semibold'>User Details</h2>
                         <div>
-                            <form action="">
-                                <div className='grid grid-cols-2 gap-4 mt-4'>
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-                                        <input
-                                            type="text" name="name"
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
-                                            placeholder="Enter Your Name"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                                        <input
-                                            type="email" name="email"
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
-                                            placeholder="Enter Your Email"
-                                        />
-                                    </div>
-                                </div>
-                                <div className='grid grid-cols-1 gap-4 mt-4'>
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">Contact</label>
-                                        <input
-                                            type="text" name="name"
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
-                                            placeholder="Enter Your Phone Number"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">Address</label>
-                                        <input
-                                            type="text" name="name"
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
-                                            placeholder="Enter Address"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">Address 2 (optional)</label>
-                                        <input
-                                            type="text" name="name"
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
-                                            placeholder="Enter Address"
-                                        />
-                                    </div>
-                                </div>
-                                <div className='grid grid-cols-2 gap-4 mt-4'>
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">Country</label>
-                                        <input
-                                            type="text" name="country"
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
-                                            placeholder="India" value={'India'}
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">State</label>
-                                        <input
-                                            type="text" name="state"
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
-                                            placeholder="State"
-                                        />
-                                    </div>
-                                </div>
-                                <div className='grid grid-cols-2 gap-4 mt-4'>
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
-                                        <input
-                                            type="text" name="city"
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
-                                            placeholder="City"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="block text-sm font-medium text-gray-700 mb-1">ZIP</label>
-                                        <input
-                                            type="email" name="zipcode"
-                                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
-                                            placeholder="ZIP Code"
-                                        />
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                <div className='rightcol w-[30%] '>
-                    <div className='bg-white w-full shadow-md px-4 py-8 rounded-lg'>
-                        <h2 className='text-xl font-semibold'>Cart Details</h2>
-                        <div className='prodDetail flex flex-col gap-2 border-b border-zinc-200 py-2'>
-                            <div className='flex justify-between'>
-                                <h4 className='font-semibold text-zinc-500'>Products</h4>
-                                <h4 className='font-semibold text-zinc-500'>Subtotal</h4>
-                            </div>
-                            <div className='flex justify-between'>
-                                <div className='prodInfo flex gap-2'>
-                                    <p className=''>Cotton Full Sleeves Shirt</p>
-                                    <span>x</span>
-                                    <span>1</span>
-                                </div>
-                                <div>
-                                    <p>₹4400</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className='flex flex-col gap-4 my-4'>
-                            <div className='flex justify-between'>
-                                <p className='text-zinc-600'>Subtotal:</p>
-                                <p>₹4400</p>
-                            </div>
-                            <div className='flex justify-between'>
-                                <p className='text-zinc-600'>Shipping:</p>
-                                <p>₹0</p>
-                            </div>
-                            <div className='flex justify-between'>
-                                <p className='text-zinc-600'>Total:</p>
-                                <p>₹4400</p>
-                            </div>
-                        </div>
-                        <hr className='border border-zinc-200' />
-                        <h2 className='text-xl font-semibold mt-4'>Payment Detail</h2>
-                        <div className='flex flex-col gap-4 mt-4'>
-                            <div className='flex justify-between'>
-                                <div>UPI</div>
-                                <p></p>
+                            <div className='flex gap-2 flex-col mt-4 justify-start md:max-h-[50vh] overflow-y-auto'>
+                                {
+                                    address?.length > 0 ?  address.map((item, index) => {
+                                        return (
+
+                                            <label key={index} className={`border border-dashed border-[rgba(0,0,0,0.2)] hover:bg-hover-[#e7f3f9] cursor-pointer p-3 rounded-md flex items-center ${selectedValue === (item?._id) ? "bg-[#e7f3f9]" : ""}`}>
+                                                <Radio {...label} name='address' checked={selectedValue === (item?._id)} value={item?._id} onChange={handleChange} />
+                                                <div className='flex flex-col uppercase'>
+                                                    <h2 className='font-semibold text-sm'>{item?.mobile}</h2>
+                                                    <h3 className='font-semibold text-sm'>{item?.address_line}</h3>
+                                                    <span className='text-[12px]'>{item?.city + " " + item?.state + " " + item?.pincode + " " + item?.country}</span>
+                                                </div>
+                                            </label>
+                                        )
+                                    }) : <h2 className='text-zinc-600'>Address Not Found</h2>
+                                }
                             </div>
 
                         </div>
                     </div>
                 </div>
-            </div>
-        </section>
+                <div className='rightcol lg:w-[30%] '>
+                    <div className='bg-white w-full shadow-md px-4 py-8 rounded-lg'>
+                        <h2 className='text-xl font-semibold'>Cart Details</h2>
+                        <div className='flex flex-col justify-between'>
+                            <table className='w-full border-b'>
+                                <thead className="border-b">
+                                    <tr>
+                                        <td>Product</td>
+                                        <td className="text-right w-[20%]">Price</td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {
+                                        products?.map((product, i) => {
+                                            const qty = context.cart.find(item => item.product === product?._id)?.quantity || 0;
+                                            return (
+                                                <tr key={i}>
+                                                    <td className='py-2'>
+                                                        <div className='flex gap-2 justify-between w-full'>
+                                                            <img src={product?.images} alt="" className='w-[50px] h-[50px] object-contain' />
+                                                            <p className='leading-4 text-zinc-700 text-sm'>
+                                                                <span>{product?.name}</span> x {qty}
+                                                            </p>
+                                                        </div>
+                                                    </td>
+                                                    <td className='text-right text-sm text-zinc-700'>
+                                                        ₹ {product?.price * qty}
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })
+                                    }
+                                </tbody>
+                            </table>
+
+                            <div className="flex justify-between mt-4 pb-2 border-b">
+                                <span className="col-6  text-sm">Subtotal</span>
+                                <span className="col-6 text-right text-sm">
+                                    <span className="money">₹{subTotal}</span>
+                                </span>
+                            </div>
+
+                            <div className="flex justify-between mt-4 pb-2 border-b">
+                                <span className="col-6 text-sm">Shipping</span>
+                                <span className="col-6 text-right text-sm">
+                                    <span className="money">₹199</span>
+                                </span> 
+                            </div>
+
+                            <div className="flex justify-between mt-4 pb-2 border-b">
+                                <span className="col-6 ">Total</span>
+                                <span className="col-6 text-right ">
+                                    <span className="money">₹{subTotal + 199}</span>
+                                </span>
+                            </div>
+                            
+                            <button type='submit' className='bg-primary cursor-pointer text-white py-2 w-full mt-4 rounded-lg'>Place Order</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </section >
     )
 }
 

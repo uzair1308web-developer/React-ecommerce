@@ -23,12 +23,15 @@ const ProductListing = () => {
     setAnchorEl(null);
   };
 
+  const [refetch, setRefetch] = useState(false);
   const [prodData, setProdData] = useState([]);
   const [loading, setLoading] = useState(false);
   const {name = '', subCat} = useParams()
+  const [priceRange, setPriceRange] = useState([0, 10000]);
+      const [discount, setDiscount] = useState("");
 
   useEffect(() => { 
-    const urlEndpoint = `/api/product/getProductsByCategoryName?catName=${name}${subCat ? `&subCatName=${subCat}` : ''}`
+    const urlEndpoint = `/api/product/getProductsByCategoryName?catName=${name}${subCat ? `&subCatName=${subCat}` : ''}&priceRange=${priceRange} &discount=${discount}`
     fetchDataFromApi(urlEndpoint).then((res) => {
 
       console.log(res) 
@@ -36,19 +39,17 @@ const ProductListing = () => {
         setProdData(res?.products)
       }
     })
-  }, [name, subCat])
-
-
+  }, [name, subCat, priceRange, discount, refetch])
 
   return (
     <section className="py-6">
       <div className='container flex gap-3'>
-        <div className="sidebarWrapper w-[20%] bg-white p-3">
-          <Sidebar />
+        <div className="sidebarWrapper lg:w-[20%] hidden lg:block bg-white p-3">
+          <Sidebar priceRange={priceRange} setPriceRange={setPriceRange} discount={discount} setDiscount={setDiscount} />
         </div>
 
-        <div className="rightContent w-[80%] bg-white p-3">
-          <div className="bg-[#f1f1f1] p-2 w-full flex rounded-md justify-between items-center mb-3 px-4">
+        <div className="rightContent lg:w-[80%] bg-white p-3">
+          <div className="bg-[#f1f1f1] p-2 w-full flex rounded-md lg:justify-between items-center mb-3 px-4">
             <div className="col1 flex items-center gap-3">
               <div className="text-xl text-zinc-600 cursor-pointer" onClick={() => setIsItemView('list')}>
                 <LuMenu />
@@ -57,7 +58,7 @@ const ProductListing = () => {
                 <IoGridSharp />
               </div>
               <div>
-                <span className="text-zinc-600">There are 5 products</span>
+                <span className="text-zinc-600 text-sm hidden">There are 5 products</span>
               </div>
             </div>
 
@@ -92,10 +93,10 @@ const ProductListing = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-4 gap-4">
+          <div className="grid lg:grid-cols-4 grid-cols-2 gap-4">
                 {
                   prodData?.map((item, index) => (
-                    <ProductItem key={index} product={item} />
+                    <ProductItem key={index} product={item} setRefetch={setRefetch} />
                   ))
                 }
             {/* <ProductItem /> */}

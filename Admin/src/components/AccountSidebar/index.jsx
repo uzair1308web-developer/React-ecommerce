@@ -111,14 +111,18 @@ const AccountSidebar = () => {
                 </li>
 
                 <li className='w-full'>
-                    <Button className='!w-full !text-left !px-5 !justify-start !capitalize !text-black !rounded-none !flex !items-center !gap-2'>
-                        <IoMdHeartEmpty className='text-[17px]' />My List
-                    </Button>
+                    <NavLink to="/my-list">
+                        <Button className='!w-full !text-left !px-5 !justify-start !capitalize !text-black !rounded-none !flex !items-center !gap-2'>
+                            <IoMdHeartEmpty className='text-[17px]' />My List
+                        </Button>
+                    </NavLink>
                 </li>
                 <li className='w-full'>
-                    <Button className='!w-full !text-left !px-5  !justify-start !capitalize !text-black !rounded-none !flex !items-center !gap-2'>
-                        <IoBagCheckOutline className='text-[17px]' />My Orders
-                    </Button>
+                    <NavLink to="/my-order">
+                        <Button className='!w-full !text-left !px-5  !justify-start !capitalize !text-black !rounded-none !flex !items-center !gap-2'>
+                            <IoBagCheckOutline className='text-[17px]' />My Orders
+                        </Button>
+                    </NavLink>
                 </li>
                 <li className='w-full'>
                     <Button className='w-full !text-left !px-5 !justify-start !capitalize !text-black !rounded-none !flex !items-center !gap-2'>

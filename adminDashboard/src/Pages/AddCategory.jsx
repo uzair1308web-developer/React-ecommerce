@@ -73,7 +73,7 @@ const AddCategory = () => {
 
       <div>
         <form action="" onSubmit={handleSubmit}>
-          <div className='grid grid-cols-2 gap-4'>
+          <div className='grid grid-cols-2 max-md:grid-cols-1 gap-4'>
             <div className='py-2'>
               <label className="block text-sm font-medium text-gray-700 mb-1">Category Name</label>
               <input type="text" name="name" className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all"
@@ -82,7 +82,7 @@ const AddCategory = () => {
           </div>
           <div className='grid grid-cols-1 gap-4 mt-2'>
             <label className='text-zinc-500 text-lg'>Category Image</label>
-            <div className='grid grid-cols-6 gap-4'>
+            <div className='grid grid-cols-6 max-md:grid-cols-1 gap-4'>
               {
                 previews.length !== 0 && previews.map((image, index) => {
                   return (

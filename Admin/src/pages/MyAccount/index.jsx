@@ -142,11 +142,11 @@ const MyAccount = () => {
 
     return (
         <section className='py-10 w-full'>
-            <div className='container flex gap-5'>
-                <div className='col1 w-[20%]'>
+            <div className='container flex gap-5 flex-col lg:flex-row'>
+                <div className='col1 lg:w-[20%]'>
                     <AccountSidebar />
                 </div>
-                <div className='col2 w-[50%]'>
+                <div className='col2 lg:w-[50%]'>
                     <div className='card bg-white p-5 shadow-md rounded-md'>
                         <div className='flex items-center justify-between pb-3'>
                             <h2 className='pb-3'>My Profile</h2>

@@ -1,5 +1,5 @@
 import { useContext, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { postData } from '../../utils/api';
 import { MyContext } from '../../App';
 import { Button, CircularProgress } from '@mui/material';
@@ -41,6 +41,9 @@ const Login = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
     const validValue = Object.values(formData).every(el => el)
+    const [searchparams] = useSearchParams()
+    const to = searchparams.get("redirect")
+    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -64,8 +67,13 @@ const Login = () => {
             localStorage.setItem("accesstoken", res?.data?.accessToken)
             localStorage.setItem("refreshtoken", res?.data?.refreshToken)
             context.setIsLogin(true)
+
             setTimeout(() => {
-                navigate('/');
+                if(to){
+                    navigate(to)
+                }else{
+                    navigate('/')
+                }
             }, 2000);
             return
         } else {

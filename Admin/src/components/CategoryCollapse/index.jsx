@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 import { fetchDataFromApi } from '../../utils/api';
 
 
-const CategoryCollapse = () => {
+const CategoryCollapse = ({ openCategoryPanel, setIsOpenCatPanel }) => {
     const [submenuIndex, setSubmenuIndex] = useState(null);
     const [innerSubmenuIndex, setInnerSubmenuIndex] = useState(null);
     const [catData, setCatData] = useState([]);
@@ -47,15 +47,19 @@ const CategoryCollapse = () => {
                         catData?.length !== 0 && catData?.map((item, index) => {
                             return (
                                 <>
-                                    <li className='list-none  relative' key={index}>
+                                    <li className='list-none  relative' key={index} >
                                         <div className='flex justify-between items-center cursor-pointer pe-4 transition duration-700'>
-                                            <Button className='w-full !text-left !justify-start !text-black !px-3'>{item.name}</Button>
+
+                                            <Link to={`/product-listing/${item?.name}`} onClick={() => setIsOpenCatPanel(false)}>
+                                                <Button className='w-full !text-left !justify-start !text-black !px-3'>{item.name}</Button>
+                                            </Link>
 
                                             {submenuIndex === index ? (
                                                 <FiMinusSquare className='cursor-pointer' onClick={() => openSubmenu(index)} />
                                             ) : (
                                                 <FaRegSquarePlus className='cursor-pointer' onClick={() => openSubmenu(index)} />
                                             )}
+
                                         </div>
                                         {
                                             submenuIndex === index &&
@@ -71,16 +75,18 @@ const CategoryCollapse = () => {
                                                                 <>
                                                                     <li className='list-none relative transition duration-700' key={index}>
                                                                         <div className='flex justify-between items-center cursor-pointer pe-4 transition duration-500'>
-                                                                            <Button className='w-full !text-left !justify-start !text-black !px-3'>
-                                                                                {child.name}
-                                                                            </Button>
+                                                                            <Link to={`/product-listing/${item?.name}/${child?.name}`} onClick={() => setIsOpenCatPanel(false)}>
+                                                                                <Button className='w-full !text-left !justify-start !text-black !px-3'>
+                                                                                    {child.name}
+                                                                                </Button>
+                                                                            </Link>
                                                                             {/* {innerSubmenuIndex === 0 ? (
                                                                                 <FiMinusSquare className='cursor-pointer' onClick={() => openInnerSubmenu(0)} />
                                                                             ) : (
                                                                                 <FaRegSquarePlus className='cursor-pointer' onClick={() => openInnerSubmenu(0)} />
                                                                             )} */}
                                                                         </div>
-                                                                        
+
                                                                     </li>
                                                                 </>
                                                             )

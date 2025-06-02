@@ -9,11 +9,25 @@ const AdsBanenrSlider = () => {
     return (
         <div className='py-5 w-full px-8'>
             <Swiper
-                slidesPerView={4}
+                slidesPerView={1}
                 spaceBetween={10}
                 navigation={true}
                 modules={[Pagination, Navigation]}
                 className="mySwiper"
+                breakpoints={{
+                    640: {
+                        slidesPerView: 2,
+                        spaceBetween: 20,
+                    },
+                    768: {
+                        slidesPerView: 4,
+                        spaceBetween: 40,
+                    },
+                    1024: {
+                        slidesPerView: 5,
+                        spaceBetween: 50,
+                    },
+                }}
             >
                 <SwiperSlide>
                     <div className='box rounded-md overflow-hidden'>

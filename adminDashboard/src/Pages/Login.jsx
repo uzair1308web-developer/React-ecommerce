@@ -104,7 +104,7 @@ const Login = () => {
                          hover:!bg-gray-900 !text-white !font-medium !py-2.5 !rounded-lg !transition-colors">
                             {
                                 isLoading === true ?
-                                    <CircularProgress color='inherit' /> :
+                                    <CircularProgress color='inherit' size={20} /> :
                                     'Sign in'
                             }
                         </Button>

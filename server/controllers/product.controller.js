@@ -80,6 +80,12 @@ export async function getProducts(request, response) {
     const totalPosts = await ProductModel.countDocuments();
     const totalPages = Math.ceil(totalPosts / perPage);
 
+    const {tag} = request.query
+    const matchQuery = {};
+    if(tag){
+      matchQuery.tag = tag
+    }
+
     if (page > totalPages) {
       return response.status(404).json({
         message: "page not found",
@@ -88,14 +94,12 @@ export async function getProducts(request, response) {
       });
     }
 
-    const products = await ProductModel.find()
+    const products = await ProductModel.find(matchQuery)
       .populate("category", "name")
       .populate("subCategory", "name")
       .skip((page - 1) * perPage)
       .limit(perPage)
       .exec();
-
-    console.log(products);
 
     if (!products) {
       return response.status(500).json({
@@ -172,6 +176,32 @@ export async function getProductsByCatId(request, response) {
   }
 }
 
+export async function getMultipleProducts(request, response) {
+  try {
+    const productIds = request.body.productIds;
+    const products = await ProductModel.find({ _id: { $in: productIds } });
+    if (!products) {
+      return response.status(500).json({
+        message: "products not found",
+        error: true,
+        success: false,
+      });
+    }
+    return response.status(200).json({
+      message: "products found successfully",
+      error: false,
+      success: true,
+      products: products,
+    });
+  } catch (error) {
+    return response.status(500).json({
+      message: error.message || error,
+      error: true,
+      success: false,
+    });
+  }
+}
+
 // get products by category name
 export async function getProductsByCatName(request, response) {
   try {
@@ -180,8 +210,26 @@ export async function getProductsByCatName(request, response) {
     const totalPosts = await ProductModel.countDocuments();
     const totalPages = Math.ceil(totalPosts / perPage);
 
-    const matchQuery = { };
-    const {subCatName} = request.query
+    const matchQuery = {};
+    const { priceRange, subCatName, discount, query } = request.query;
+
+    if (priceRange) {
+      matchQuery.price = { $gt: priceRange.split(",")[0] };
+      matchQuery.price = { $lt: priceRange.split(",")[1] };
+    }
+
+    if (discount) {
+      matchQuery.discount = { $lte: discount };
+    }
+
+    if (query) {
+      const searchQuery = { $regex: query, $options: "i" };
+      matchQuery.$or = [
+        { name: searchQuery },
+        { description: searchQuery },
+        { "category.name": searchQuery },
+      ];
+    }
 
     if (page > totalPages) {
       return response.status(404).json({
@@ -189,22 +237,23 @@ export async function getProductsByCatName(request, response) {
         error: true,
         success: false,
       });
-
-    }
-    const category = await CategoryModel.findOne({ name: request.query.catName })
-    .select("_id")
-    .lean();
-
-    if(category){
-      matchQuery.category = category._id
     }
 
-    if(subCatName){
-      const subCategory = await CategoryModel.findOne({ name: subCatName })
+    const category = await CategoryModel.findOne({
+      name: request.query.catName,
+    })
       .select("_id")
       .lean();
-      if(subCategory){
-        matchQuery.subCategory = subCategory._id
+    if (category) {
+      matchQuery.category = category._id;
+    }
+
+    if (subCatName) {
+      const subCategory = await CategoryModel.findOne({ name: subCatName })
+        .select("_id")
+        .lean();
+      if (subCategory) {
+        matchQuery.subCategory = subCategory._id;
       }
     }
 

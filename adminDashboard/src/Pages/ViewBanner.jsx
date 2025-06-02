@@ -9,24 +9,23 @@ import { Link, } from 'react-router-dom';
 
 const ViewBanner = () => {
     const columns = [
-
         {
             field: 'categImage',
             headerName: 'Image',
             flex: 1,
-            minWidth: 70,
+            minWidth: 140,
             renderCell: (params) => (
                 <div className='py-4 overflow-hidden'>
                     <img
                         src={params.row.image}
                         alt={params.row.name}
-                        style={{  objectFit: 'cover' }}
+                        style={{  objectFit: 'cover' }}  
                     />
                 </div>
             )
         },
 
-        { field: 'link', headerName: 'Link', flex: 0.5, minWidth: 70 },
+        { field: 'link', headerName: 'Link', flex: 0.5, minWidth: 100 },
 
         {
             field: 'action',

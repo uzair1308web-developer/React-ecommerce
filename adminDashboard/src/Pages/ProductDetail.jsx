@@ -8,7 +8,6 @@ const ProductDetail = () => {
     const { id } = useParams()
     useEffect(() => {
         fetchDataFromApi(`/api/product/${id}`).then((res) => {
-            console.log(res?.product)
             if (res?.error === false) {
                 setProduct(res?.product)
             }
@@ -25,7 +24,7 @@ const ProductDetail = () => {
                         <div className='productImg w-[40%] h-[400px] overflow-hidden border border-zinc-200'>
                             {
                                 product?.images?.length > 0 && product?.images?.map((img, i) => (
-                                    <img src={img} alt="" className='w-full h-full object-contain' />
+                                    <img src={img} alt="" key={i} className='w-full h-full object-contain' />
                                 ))
                             }
                         </div>
@@ -34,12 +33,15 @@ const ProductDetail = () => {
                                 {product?.name}
                             </h2>
                             <p className='text-sm'>Brand Name: <span className='text-black text-base font-semibold'> {product?.brand} </span></p>
+
                             <div>
                                 <p className='text-sm'>Category: <span className='text-black text-base font-semibold'> {product?.category?.name} </span></p>
                             </div>
+
                             <div>
                                 <p className='text-sm'>Sub Category: <span className='text-black text-base font-semibold'> {product?.subCategory?.name} </span></p>
                             </div>
+                            
                             <div>
                                 <p className='text-sm'>RAM : <span className='text-black text-base font-semibold'> {product?.productRam?.map((ram, index) => {
                                     return (
@@ -50,6 +52,9 @@ const ProductDetail = () => {
 
                             <div>
                                 <p className='text-sm'>Stock: <span className='text-black text-base font-semibold'> {product?.countInStock} </span></p>
+                            </div>
+                            <div>
+                                <p className='text-sm'>Tag: <span className='text-black text-base font-semibold'> {product?.tag} </span></p>
                             </div>
 
                             <div className='text-lg flex gap-4 items-center'>

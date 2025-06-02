@@ -20,20 +20,18 @@ const ShowProdCategory = () => {
             field: 'categImage',
             headerName: 'Image',
             flex: 0.5,
-            minWidth: 70,
+            minWidth: 120,
             renderCell: (params) => (
-                <div className='py-4 rounded-full overflow-hidden'>
+                <div className='py-4 flex h-full items-center justify-center rounded-full overflow-hidden'>
                     <img
                         src={params.row.images}
                         alt={params.row.name}
-                        style={{ width: 100, height: 100, borderRadius: '100px', objectFit: 'cover' }}
+                        className='h-16 object-cover'
                     />
                 </div>
             )
         },
-
-        { field: 'name', headerName: 'Name', flex: 0.5, minWidth: 70 },
-
+        { field: 'name', headerName: 'Name', flex: 0.5, minWidth: 150 },
         {
             field: 'action',
             headerName: 'Action',

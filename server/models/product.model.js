@@ -59,6 +59,10 @@ const productSchema = mongoose.Schema(
         default: null,
       },
     ],
+    tag: {
+      type: String,
+      default: null,
+    },
     sizes: [
       {
         size: String,

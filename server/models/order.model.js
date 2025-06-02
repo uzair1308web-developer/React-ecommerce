@@ -1,23 +1,24 @@
-import mongoose, { mongo } from "mongoose";
+import mongoose from "mongoose";
 
 const orderSchema = new mongoose.Schema({
-    userID : {
+    userId : {
         type : mongoose.Schema.ObjectId,
         ref : 'User',
     },
-    orderId : {
-        type: String ,
-        required :[true, "Provide orderId"],
-        unique: true
-    },
-    productId : {
-        type : mongoose.Schema.ObjectId,
-        ref : "product"
-    },
-    product_details : {
-        name : String,
-        image : Array,
-    },
+    products : [{
+        product: {
+            type : mongoose.Schema.ObjectId,
+            ref : "Product"
+        },
+        quantity : {
+            type : Number,
+            default : 1
+        },
+        size : {
+            type : String,
+            default : ""
+        }
+    }],
     paymentId : {
         type : String,
         default : ""
@@ -27,15 +28,20 @@ const orderSchema = new mongoose.Schema({
         type : String,
         default : ""
     },
+    status: {
+        type : String,
+        enum : ["placed", "shipped", "delivered"],
+        default : "placed"
+    },
     delivery_address : {
         type : mongoose.Schema.ObjectId,
         ref : "address"
     },
-    subTotalAmt : {
+    subTotal : {
         type : Number,
         default : 0
     },
-    totalAmt : {
+    total : {
         type : Number,
         default : 0
     },

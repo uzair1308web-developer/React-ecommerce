@@ -1,15 +1,26 @@
+/* eslint-disable react/prop-types */
 import { useContext } from 'react'
 import { MyContext } from '../../App'
 import { Button } from '@mui/material'
+import {Link, useLocation, useNavigate} from 'react-router-dom'
 
 // eslint-disable-next-line react/prop-types
 const AddToCartButton = ({ product, size }) => {
   const context = useContext(MyContext)
+  const navigate = useNavigate()
 
+  const location = useLocation()
+  const pathname = location.pathname
   const addToCart = () => {
-
-    context.setCart([...context.cart, { product: product._id, quantity: 1 }]);
-    localStorage.setItem("cart", JSON.stringify([...context.cart, { product: product._id, quantity: 1 }]));
+    if(context.isLogin === false) {
+      context.openAlertBox('error',"Redirecting to login page") 
+      setTimeout(() => {
+        navigate(`/login?redirect=${pathname}`)
+      }, 3000)
+      return
+    }
+    context.setCart([...context.cart, { product: product._id, quantity: 1, size }]);
+    localStorage.setItem("cart", JSON.stringify([...context.cart, { product: product._id, quantity: 1, size }]));
   }
 
   const updateQuantity = (direction) => {
@@ -63,7 +74,8 @@ const AddToCartButton = ({ product, size }) => {
             </div>
 
             <div className='w-full'>
-              <Button type='submit' className="!border w-full !border-[#ff5252] !text-[#ff5252] !bg-white hover:!bg-[#ff5252] hover:!text-white !transition !duration-700 " onClick={addToCart}>
+              <Button component={Link} to={`/checkout`} className="!border w-full !border-[#ff5252] !text-[#ff5252] !bg-white hover:!bg-[#ff5252] hover:!text-white !transition !duration-700 ">
+
                 Buy Now
               </Button>
             </div>

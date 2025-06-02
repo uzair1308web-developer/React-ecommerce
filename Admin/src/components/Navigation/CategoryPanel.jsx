@@ -22,7 +22,7 @@ const CategoryPanel = ({ openCategoryPanel, setIsOpenCatPanel }) => {
                 Shop By Categories
                 <IoCloseSharp onClick={toggleDrawer(false)} className='cursor-pointer text-2xl' />
             </h3>
-            <CategoryCollapse/>
+            <CategoryCollapse openCategoryPanel={openCategoryPanel} setIsOpenCatPanel={setIsOpenCatPanel}/>
         </Box>
     );
 

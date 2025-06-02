@@ -45,7 +45,7 @@ const Preview = () => {
     return (
         <>
             <div className='w-full '>
-                <div className='w-full p-5  border bg-[#f1faff] shadow-md flex items-center gap-8 mb-5 justify-between rounded-md'>
+                <div className='w-full p-5  border bg-[#f1faff] shadow-md flex flex-col sm:flex-row items-center gap-8 mb-5 justify-between rounded-md'>
                     <div className='info'>
                         <h1 className='text-[26px] lg:text-[35px] font-bold leading-8 lg:leading-10 mb-3'>
                             Welcome,
@@ -57,7 +57,7 @@ const Preview = () => {
                     <img src="/assets/images/shop-illustration.webp" width={160} alt="" />
                 </div>
             </div>
-            <div className='grid grid-cols-4 gap-4'>
+            <div className='grid grid-cols-4 max-sm:grid-cols-1 gap-4'>
                 <div className='box p-5 cursor-pointer rounded-md border border-zinc-200 flex items-center gap-4'>
                     <AiTwotoneGift className='text-3xl text-red-500' />
                     <div className='info w-[70%]'>

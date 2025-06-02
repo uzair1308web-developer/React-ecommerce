@@ -16,6 +16,10 @@ import { fetchDataFromApi } from './utils/api';
 import ForgotPassword from './pages/ForgotPassword';
 import MyAccount from './pages/MyAccount';
 import Address from './pages/MyAccount/address';
+import Search from './pages/Search';
+import Order from './pages/MyAccount/order';
+import Wishlist from './pages/MyAccount/wishlist';
+import OrderConfirmed from './pages/OrderConfirmed';
 const alertBox = (msg, type) => {
   if (type === "success") {
     toast.success(msg)
@@ -31,6 +35,8 @@ function App() {
   const [userData, setUserData] = useState(null)
   const [address, setAddress] = useState([]);
   const [cart, setCart] = useState( localStorage.getItem("cart") ? JSON.parse(localStorage.getItem("cart")) : []);
+  const [query, setQuery] = useState('');
+  const [wishlist, setWishlist] = useState([]);
 
   const token = localStorage.getItem('accesstoken');
   useEffect(() => {
@@ -39,6 +45,7 @@ function App() {
         setIsLogin(true);
         fetchDataFromApi(`/api/user/user-details`).then((res) => {
           setUserData(res.data)
+          setWishlist(res?.wishlist?.products)
           if (res.response.data.error === true) {
             localStorage.removeItem("accesstoken");
             localStorage.removeItem("refreshtoken");
@@ -52,6 +59,8 @@ function App() {
     }
     fetchUser()
   }, [token])
+
+  
 
   
 
@@ -71,9 +80,13 @@ function App() {
     openAlertBox,
     setUserData,
     setAddress,
+    wishlist,
+    setWishlist,
     userData,
     cart,
-    setCart
+    setCart,
+    query,
+    setQuery
   }
 
 
@@ -86,8 +99,11 @@ function App() {
             <Route path={"/"} exact={true} element={<Home />} />
             <Route path={"/my-account"} exact={true} element={<MyAccount />} />
             <Route path={"/address"} exact={true} element={<Address />} />
+            <Route path={"/my-list"} exact={true} element={<Wishlist />} />
+            <Route path={"/my-order"} exact={true} element={<Order />} />
             <Route path={"/product-listing/:name/"} exact={true} element={<ProductListing />} />
             <Route path={"/product-listing/:name/:subCat"} exact={true} element={<ProductListing />} />
+            <Route path={"/search"} exact={true} element={<Search />} />
             <Route path={"/product/:id"} exact={true} element={<ProductDetail />} />
             <Route path={"/login"} exact={true} element={<Login />} />
             <Route path={"/forgot-password"} exact={true} element={<ForgotPassword />} />
@@ -95,6 +111,7 @@ function App() {
             <Route path={"/verifyOtp"} exact={true} element={<VerifyOtp />} />
             <Route path={"/cart"} exact={true} element={<Cart />} />
             <Route path={"/checkout"} exact={true} element={<Checkout />} />
+            <Route path={"/order-confirmed"} exact={true} element={<OrderConfirmed />} />
           </Routes>
           <Toaster />
           <Footer />

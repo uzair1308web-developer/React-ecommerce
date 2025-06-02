@@ -9,6 +9,8 @@ import generatedRefreshToken from "../utils/generatedRefreshToken.js";
 import { v2 as cloudinary } from "cloudinary";
 import fs from "fs";
 import CategoryModel from "../models/category.model.js";
+import WishlistModel from "../models/wishlist.model.js";
+import { sign } from "crypto";
 
 cloudinary.config({
   cloud_name: process.env.cloudinary_Config_Cloud_Name,
@@ -136,6 +138,88 @@ export async function verifyEmailController(request, response) {
   }
 }
 
+export async function authWithGoogle(request, response) {
+  const { name, email, password, avatar, mobile, role } =
+    request.body;
+
+    console.log("here")
+
+  try {
+    const existUser = await UserModel.findOne({ email });
+
+    if (!existUser) {
+      const user = await UserModel.create({
+        name: name,
+        email: email,
+        password: "null",
+        avatar: avatar,
+        mobile: mobile,
+        role: "USER",
+        verify_email: true,
+        signUpWithGoogle: true
+      });
+
+      await user.save();
+
+      const accessToken = await generatedAccessToken(user._id);
+      const refreshToken = await generatedRefreshToken(user._id);
+
+     await UserModel.findByIdAndUpdate(user?._id, {
+        last_login_date: new Date(),
+      });
+      const cookiesOption = {
+        httpOnly: true,
+        secure: true,
+        sameSite: "None",
+      };
+
+      response.cookie("accessToken", accessToken, cookiesOption);
+      response.cookie("refreshToken", refreshToken, cookiesOption);
+
+      return response.status(200).json({
+        success: true,
+        error: false,
+        message: "User logged in successfully",
+        data: {
+          accessToken,
+          refreshToken,
+        },
+      }); 
+    }else{
+      const accesstoken = await generatedAccessToken(existUser._id);
+      const refreshToken = await generatedRefreshToken(existUser._id);
+
+      await UserModel.findByIdAndUpdate(existUser?._id, {
+        last_login_date: new Date(),
+      });
+      const cookiesOption = {
+        httpOnly: true,
+        secure: true,
+        sameSite: "None",
+      };
+
+      response.cookie("accessToken", accesstoken, cookiesOption);
+      response.cookie("refreshToken", refreshToken, cookiesOption);
+
+      return response.status(200).json({
+        success: true,
+        error: false,
+        message: "User logged in successfully",
+        data: {
+          accessToken: accesstoken,
+          refreshToken,
+        },
+      });
+    }
+  } catch (error) {
+    return response.status(500).json({
+      message: error.message || error,
+      error: true,
+      success: false,
+    });
+  }
+}
+
 export async function loginUserController(request, response) {
   try {
     const { email, password } = request.body;
@@ -164,7 +248,7 @@ export async function loginUserController(request, response) {
     const checkPassword = await bcryptjs.compare(password, user.password);
 
     if (!checkPassword) {
-      console.log("wrong password")
+      console.log("wrong password");
       return response.status(400).json({
         message: "Check your password",
         error: true,
@@ -203,7 +287,6 @@ export async function loginUserController(request, response) {
     });
   }
 }
-
 export async function logoutController(request, response) {
   try {
     const userId = request.userId;
@@ -365,7 +448,7 @@ export async function updateUserDetails(request, response) {
         email: updateUser.email,
         mobile: updateUser.mobile,
         avatar: updateUser.avatar,
-      }
+      },
     });
   } catch (error) {
     return response.status(500).json({
@@ -501,7 +584,7 @@ export async function resetPassword(request, response) {
     }
 
     const checkPassword = await bcryptjs.compare(oldPassword, user.password);
-    if(!checkPassword){
+    if (!checkPassword) {
       return response.status(400).json({
         message: "Your old password is incorrect",
         error: true,
@@ -597,18 +680,20 @@ export async function userDetails(request, response) {
     const user = await UserModel.findById(userId).select(
       "-password -refresh_token"
     );
+    const wishlist = await WishlistModel.findOne({ userId });
 
-    if(!user){
+    if (!user) {
       return response.status(400).json({
         message: "user not found",
         error: true,
         success: false,
-      })
+      });
     }
 
     return response.json({
       message: "user details",
       data: user,
+      wishlist,
       error: false,
       success: true,
     });
@@ -620,6 +705,3 @@ export async function userDetails(request, response) {
     });
   }
 }
-
-
-

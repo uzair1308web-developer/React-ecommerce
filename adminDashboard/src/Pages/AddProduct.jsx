@@ -34,6 +34,7 @@ const AddProduct = () => {
         countInStock: "",
         rating: "",
         isFeatured: false,
+        tag: "",
         discount: "",
         productRam: [],
         sizes: [],
@@ -42,6 +43,7 @@ const AddProduct = () => {
 
     const [productCat, setProductCat] = useState('');
     const [productSubCat, setProductSubCat] = useState('');
+    const [productTag, setProductTag] = useState('');
     const [productFeatured, setProductFeatured] = useState(false);
     const [productRams, setProductRams] = useState([]);
     const [productSize, setProductSize] = useState([]);
@@ -74,6 +76,7 @@ const AddProduct = () => {
     const selectCatByName = (name) => {
         formData.catName = name
     }
+    
 
     const handleChangeProductSubCat = (event) => {
         setProductSubCat(event.target.value);
@@ -84,6 +87,11 @@ const AddProduct = () => {
         formData.subCat = name
     }
 
+    const handleChangeProductTag = (event) => {
+        setProductTag(event.target.value);
+        formData.tag = event.target.value
+    }
+
     const handleChangeProductRams = (event) => {
         const {
             target: { value },
@@ -92,6 +100,7 @@ const AddProduct = () => {
         setProductRams(typeof value === 'string' ? value.split(',') : value);
         formData.productRam = value
     }
+
     const handleChangeProductWeight = (event) => {
         const {
             target: { value },
@@ -100,13 +109,13 @@ const AddProduct = () => {
         setProductWeight(typeof value === 'string' ? value.split(',') : value);
         formData.productWeight = value
     }
-     const handleChangeProductSize = (event) => {
+    const handleChangeProductSize = (event) => {
         const {
             target: { value },
         } = event;
         console.log(value)
         setProductSize(typeof value === 'string' ? value.split(',') : value);
-        formData.sizes = value.map(val => ({size: val}))
+        formData.sizes = value.map(val => ({ size: val }))
     }
 
     const onChangeRating = (event) => {
@@ -153,6 +162,7 @@ const AddProduct = () => {
                     subCatId: "",
                     subCat: "",
                     countInStock: "",
+                    tag: "",
                     rating: "",
                     isFeatured: false,
                     discount: "",
@@ -197,7 +207,7 @@ const AddProduct = () => {
                             <TextField id="standard-basic" fullWidth label="Product Old Price" variant="standard" className='' color='black' name='oldPrice' value={formData.oldPrice} onChange={handleChange} />
                         </div>
                     </div>
-                    <div className='grid grid-cols-4 gap-4 mt-4'>
+                    <div className='grid grid-cols-4 max-md:grid-cols-1 gap-4 mt-4'>
                         <div className=''>
                             <label htmlFor="" className='text-zinc-500'>Product Category</label>
                             {
@@ -285,11 +295,11 @@ const AddProduct = () => {
                             <TextField id="standard-basic" fullWidth label="Product Discount" variant="standard" className='' color='black' name='discount' value={formData.discount} onChange={handleChange} />
                         </div>
                     </div>
-                    <div className='grid grid-cols-4 gap-4 mt-2'>
+                    <div className='grid grid-cols-4 max-md:grid-cols-1 gap-4 mt-2'>
+
                         <div className='py-2'>
-                            <label htmlFor="" className='text-zinc-500'>Product RAMS</label>
-                            <Select
-                                label="Product RAMS"
+                            <label htmlFor="" className='text-zinc-500'>Product Rams</label>
+                            <Select label="Product RAMS"
                                 multiple
                                 fullWidth
                                 variant='standard'
@@ -317,6 +327,39 @@ const AddProduct = () => {
                                 <MenuItem value={'4GB'}>4GB</MenuItem>
                                 <MenuItem value={'6GB'}>6GB</MenuItem>
                                 <MenuItem value={'8GB'}>8GB</MenuItem>
+                            </Select>
+                        </div>
+
+                        <div className='py-2'>
+                            <label htmlFor="" className='text-zinc-500'>Product Tag</label>
+                            <Select
+                                label="Product Tag"
+                                fullWidth
+                                variant='standard'
+                                value={productTag}
+                                onChange={handleChangeProductTag}
+                                MenuProps={MenuProps}
+                                sx={{
+                                    '& .MuiSelect-root': {
+                                        borderBottom: '1px solid rgba(0, 0, 0, 0.42)', // Bottom border like TextField
+                                        borderRadius: 0, // Removes corner rounding
+                                        '&:hover': {
+                                            borderBottom: '2px solid black' // Hover effect for better UX
+                                        },
+                                        '&:focus': {
+                                            borderBottom: '2px solid black' // Focus effect like TextField
+                                        },
+                                        paddingX: 0 // Align text to match the TextField spacing
+                                    },
+                                    '&::after': {
+                                        borderBottom: '2px solid black' // Focus underline effect
+                                    }
+                                }}
+                            >
+                                <MenuItem value={'New'}>New</MenuItem>
+                                <MenuItem value={'Popular'}>Popular</MenuItem>
+                                <MenuItem value={'Hot'}>Hot</MenuItem>
+
                             </Select>
                         </div>
 
@@ -384,15 +427,16 @@ const AddProduct = () => {
                                 <MenuItem value={'L'}>L</MenuItem>
                             </Select>
                         </div>
-                     
+
                     </div>
+
                     <div className='py-2'>
                         <label htmlFor="" className='block mb-2 text-zinc-600'>Rating</label>
                         <Rating name="half-rating" defaultValue={2.5} precision={0.5} onChange={onChangeRating} />
                     </div>
                     <div className='grid grid-cols-1 gap-4 mt-2'>
                         <label className='text-zinc-500 text-lg'>Product Image</label>
-                        <div className='grid grid-cols-6 gap-4'>
+                        <div className='grid grid-cols-6 max-md:grid-cols-1 gap-4'>
                             {
                                 previews.length !== 0 && previews.map((image, index) => {
                                     return (
